@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 @TeleOp(name="AprilTag Tracking Test", group="Test")
-@Disabled
+@Disabled   // comment this out to add to the OpMode list on the Driver Hub
 public class AprilTagTrackingTest extends LinearOpMode {
 
     // Declare drive motors

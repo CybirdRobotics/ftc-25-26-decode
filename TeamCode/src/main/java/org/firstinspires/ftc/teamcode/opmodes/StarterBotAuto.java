@@ -63,7 +63,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 
 @Autonomous(name="StarterBotAuto", group="StarterBot")
-@Disabled
+@Disabled   // comment this out to add to the OpMode list on the Driver Hub
 public class StarterBotAuto extends OpMode
 {
 
@@ -365,7 +365,7 @@ public class StarterBotAuto extends OpMode
                  * the robot has been within a tolerance of the target position for "holdSeconds."
                  * Once the function returns "true" we reset the encoders again and move on.
                  */
-                if(drive(DRIVE_SPEED, -4, DistanceUnit.INCH, 1)){
+                if (drive(DRIVE_SPEED, -4, DistanceUnit.INCH, 1)) {
                     //leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     //rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -378,13 +378,13 @@ public class StarterBotAuto extends OpMode
                 break;
 
             case ROTATING:
-                if(alliance == Alliance.RED){
+                if (alliance == Alliance.RED) {
                     robotRotationAngle = 45;
-                } else if (alliance == Alliance.BLUE){
+                } else if (alliance == Alliance.BLUE) {
                     robotRotationAngle = -45;
                 }
 
-                if(rotate(ROTATE_SPEED, robotRotationAngle, AngleUnit.DEGREES,1)){
+                if(rotate(ROTATE_SPEED, robotRotationAngle, AngleUnit.DEGREES,1)) {
                     //leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     //rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -397,7 +397,7 @@ public class StarterBotAuto extends OpMode
                 break;
 
             case DRIVING_OFF_LINE:
-                if(drive(DRIVE_SPEED, -26, DistanceUnit.INCH, 1)){
+                if (drive(DRIVE_SPEED, -26, DistanceUnit.INCH, 1)) {
                     autonomousState = AutonomousState.COMPLETE;
                 }
                 break;
@@ -563,7 +563,7 @@ public class StarterBotAuto extends OpMode
         frontRightDrive.setTargetPosition((int) rightTargetPosition);
         backRightDrive.setTargetPosition((int) rightTargetPosition);
 
-       // leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);

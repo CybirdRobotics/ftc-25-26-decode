@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 
-@TeleOp(name="Mecanum Drive (Coach Pratt)", group = "OpMode")
-@Disabled
+@TeleOp(name="TeleOp Example", group = "OpMode")
+//@Disabled   // comment this out to add to the OpMode list on the Driver Hub
 public class TeleOpExample extends OpMode {
 
     MecanumDrive drive = new MecanumDrive();    // create instance of MecanumDrive object (class)
@@ -21,14 +21,27 @@ public class TeleOpExample extends OpMode {
     public void init() {
         drive.init(hardwareMap);
         //launcher.init(hardwareMap);
+
+        // Send telemetry message to signify robot is ready.
+        // This telemetry line is especially important when using the IMU, as the IMU can take
+        // a couple of seconds to initialize and this line executes when IMU initialization is complete.
+        telemetry.addLine("Robot initialized.  Press play to start.");
     }
 
     @Override
     public void loop() {
+        telemetry.addLine("Press A to reset Yaw.");
+        telemetry.addLine("Hold LEFT bumper to drive in robot relative mode.");
+
+        // When gamepad1.a is pressed, reset the YAW to 0 based on the orientation relative to the robot's position
+        if (gamepad1.a) {
+            drive.resetYaw();
+        }
+
         if (gamepad1.left_bumper) {  // press the left bumper for robot centric drive
             drive.driveRobotRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
         } else {    // field centric drive
-            drive.driveRobotRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            drive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
         }
 
         /*
@@ -46,6 +59,6 @@ public class TeleOpExample extends OpMode {
 
         telemetry.addData("State", launcher.getState());
         telemetry.addData("Launcher Velocity", launcher.getVelocity());
-         */
+        */
     }
 }

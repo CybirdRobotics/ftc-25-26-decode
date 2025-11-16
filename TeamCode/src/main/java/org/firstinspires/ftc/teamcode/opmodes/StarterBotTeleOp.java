@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -59,7 +60,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name = "StarterBotTeleOp", group = "StarterBot")
-//@Disabled
+@Disabled   // comment this out to add to the OpMode list on the Driver Hub
 public class StarterBotTeleOp extends OpMode {
     final double FEED_TIME_SECONDS = 0.20; //The feeder servos run this long when a shot is requested.
     final double STOP_SPEED = 0.0; //We send this power to the servos when we want them to stop.
@@ -128,10 +129,10 @@ public class StarterBotTeleOp extends OpMode {
          * to 'get' must correspond to the names assigned during the robot configuration
          * step.
          */
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         launcher = hardwareMap.get(DcMotorEx.class, "launcher");
         leftFeeder = hardwareMap.get(CRServo.class, "left_feeder");
         rightFeeder = hardwareMap.get(CRServo.class, "right_feeder");
@@ -182,10 +183,10 @@ public class StarterBotTeleOp extends OpMode {
          */
         leftFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        /*
-         * Tell the driver that initialization is complete.
-         */
-        telemetry.addData("Status", "Initialized");
+        // Send telemetry message to signify robot is ready.
+        // This telemetry line is especially important when using the IMU, as the IMU can take
+        // a couple of seconds to initialize and this line executes when IMU initialization is complete.
+        telemetry.addLine("Robot initialized.  Press play to start.");
     }
 
     /*

@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name = "Test Drive Motors", group = "Test")
-//@Disabled
+//@Disabled   // comment this out to add to the OpMode list on the Driver Hub
 public class TestDriveMotors extends OpMode
 {
     // Declare OpMode members.

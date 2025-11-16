@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @TeleOp(name="AprilTag Distance Test", group="Test")
-@Disabled
+@Disabled   // comment this out to add to the OpMode list on the Driver Hub
 public class AprilTagDistanceTest extends OpMode {
     private Limelight3A limelight;
     private IMU imu;

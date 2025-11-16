@@ -11,7 +11,7 @@ public class MecanumDrive {
     private DcMotor frontLeftDrive, backLeftDrive, frontRightDrive, backRightDrive;
     private IMU imu;
 
-    private double speedLimiter = 0.65;  // speedLimiter reduces movement speed to a specified % of maximum (1.0). Used for outreach events.
+    private double speedLimiter = 0.5;  // speedLimiter reduces movement speed to a specified % of maximum (1.0). Used for outreach events.
 
     public void init(HardwareMap hwMap) {
 
@@ -25,28 +25,31 @@ public class MecanumDrive {
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         // TODO: Make sure all motors are facing the correct direction.
-        //frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Use encoder for constant power resulting in increased accuracy. Comment out if motor encoders not connected.
-        //frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         imu = hwMap.get(IMU.class, "imu");
         // TODO: Change the the following to match the controller Hub orientation on your robot
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
         imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 
+    public void resetYaw() {
+        imu.resetYaw();
+    }
     public void driveFieldRelative(double forward, double strafe, double turn) {
         // Drive robot from the field frame of reference (field relative).
 
@@ -75,36 +78,29 @@ public class MecanumDrive {
 
         // Calculate the power needed for each wheel based on the amount of forward (y), strafe (x), and turn (rx)
         // See mecanum drive reference: https://cdn11.bigcommerce.com/s-x56mtydx1w/images/stencil/original/products/2234/13280/3209-0001-0007-Product-Insight-2__06708__33265.1725633323.png?c=1
-        double frontLeftPower = (y + x + rx) / scaleFactor;
-        double backLeftPower = (y - x + rx) / scaleFactor;
-        double frontRightPower = (y - x - rx) / scaleFactor;
-        double backRightPower = (y + x - rx) / scaleFactor;
+        double frontLeftPower = ((y + x + rx) / scaleFactor) * speedLimiter;
+        double backLeftPower = ((y - x + rx) / scaleFactor) * speedLimiter;
+        double frontRightPower = ((y - x - rx) / scaleFactor) * speedLimiter;
+        double backRightPower = ((y + x - rx) / scaleFactor) * speedLimiter;
 
         // Set scaled motor powers (with limiter).
-        frontLeftDrive.setPower(squarePower(frontLeftPower) * speedLimiter);
-        backLeftDrive.setPower(squarePower(backLeftPower) * speedLimiter);
-        frontRightDrive.setPower(squarePower(frontRightPower) * speedLimiter);
-        backRightDrive.setPower(squarePower(backRightPower) * speedLimiter);
+        frontLeftDrive.setPower(squarePower(frontLeftPower));
+        backLeftDrive.setPower(squarePower(backLeftPower));
+        frontRightDrive.setPower(squarePower(frontRightPower));
+        backRightDrive.setPower(squarePower(backRightPower));
     }
 
-    private void normalize(double[] wheelSpeeds) {
-        double maxMagnitude = Math.abs(wheelSpeeds[0]);
-        for (int i = 1; i < wheelSpeeds.length; i++) {
-            double temp = Math.abs(wheelSpeeds[i]);
-            if (maxMagnitude < temp) {
-                maxMagnitude = temp;
-            }
-        }
-        if (maxMagnitude > 1) {
-            for (int i = 0; i < wheelSpeeds.length; i++) {
-                wheelSpeeds[i] = (wheelSpeeds[i] / maxMagnitude);
-            }
-        }
-
-    }
     private static double squarePower(double power) {
         // Function to square motor power to allow for better micro control.  Returns a double.
         return power * Math.abs(power);  // square magnitude of input while maintaining the sign
+    }
+
+    public void stopRobot() {
+        // Stop robot movement.
+        frontLeftDrive.setPower(0);
+        backLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        backRightDrive.setPower(0);
     }
 }
 
